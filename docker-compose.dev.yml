@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: api-tenant
+    environment:
+      - PORT=8080
+    ports:
+      - 8083:8080
+    networks:
+      - tenant
+  
+  database:
+    image: postgres #Set a more specific image with tag
+    container_name: database
+    environment: #finish later 
+      - name=value
+    ports:
+      - 5432:5432
+    networks:
+      - tenant
+
+networks:
+  tenant:
+    - bridge
