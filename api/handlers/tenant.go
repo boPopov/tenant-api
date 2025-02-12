@@ -36,6 +36,7 @@ func GetAllTenants(c *fiber.Ctx) error {
 // UpdateTenant - Update a tenant
 func UpdateTenant(c *fiber.Ctx) error {
 	id := c.Params("id")
+	//Check if ID is a number
 	var tenant models.Tenant
 	if err := database.DB.First(&tenant, id).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Tenant not found"})
@@ -52,6 +53,7 @@ func UpdateTenant(c *fiber.Ctx) error {
 // DeleteTenant - Delete a tenant
 func DeleteTenant(c *fiber.Ctx) error {
 	id := c.Params("id")
+	//Check if id is a number
 	if err := database.DB.Delete(&models.Tenant{}, id).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Tenant not found"})
 	}
