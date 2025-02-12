@@ -7,14 +7,16 @@ services:
       dockerfile: Dockerfile.dev
     container_name: api-tenant
     environment:
-      - PORT=8080
+      - PORT=3000
       - DB_HOST=database
       - DB_USER=postgres
       - DB_PASSWORD=postgres
       - DB_NAME=tenants
       - DB_PORT=5432
+      - GITHUB_CLIENT_ID=Ov23lisSIcHJt3PmOIpb
+      - GITHUB_CLIENT_SECRET=dd4583142eca2c0b26922b66ec2e12cd7afb3a2a
     ports:
-      - 8083:8080
+      - 3000:3000
     depends_on:
       - database
     networks:
