@@ -8,16 +8,27 @@ services:
     container_name: api-tenant
     environment:
       - PORT=8080
+      - DB_HOST=database
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=tenants
+      - DB_PORT=5432
     ports:
       - 8083:8080
+    depends_on:
+      - database
     networks:
       - tenant
   
   database:
-    image: postgres #Set a more specific image with tag
+    image: postgres
     container_name: database
-    environment: #finish later 
-      - name=value
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=tenants
+    volumes:
+      - ./database-data:/var/lib/postgresql/data
     ports:
       - 5432:5432
     networks:
@@ -25,4 +36,4 @@ services:
 
 networks:
   tenant:
-    - bridge
+    driver: bridge
