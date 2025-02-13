@@ -9,6 +9,8 @@ COPY go.mod go.sum ./
 # Install dependencies
 RUN go mod tidy
 
+RUN go get github.com/jackc/pgx/v5/pgconn@v5.5.5
+
 # Copy the rest of the application code
 COPY . .
 
