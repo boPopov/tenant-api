@@ -23,12 +23,23 @@ var oauthConfig = &oauth2.Config{
 var jwtSecret = []byte("supersecretkey") // Change this in production!
 
 // GitHub Login Handler - Redirects to GitHub OAuth
+// @Summary GitHub Login
+// @Description Redirects user to GitHub for OAuth authentication
+// @Tags Authentication
+// @Success 302
+// @Router /auth/github/login [get]
 func GithubLoginHandler(c *fiber.Ctx) error {
 	url := oauthConfig.AuthCodeURL("randomStringForCSRF", oauth2.AccessTypeOffline)
 	return c.JSON(fiber.Map{"auth_url": url})
 }
 
 // GitHub Callback Handler - Exchanges code for access token
+// @Summary GitHub OAuth Callback
+// @Description Handles the OAuth callback from GitHub
+// @Tags Authentication
+// @Param code query string true "Authorization Code"
+// @Success 200 {object} object
+// @Router /auth/github/callback [get]
 func GithubCallbackHandler(c *fiber.Ctx) error {
 	// Get code from GitHub callback
 	code := c.Query("code")

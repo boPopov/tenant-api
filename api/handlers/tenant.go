@@ -6,7 +6,15 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// CreateTenant - Create a new tenant
+// @Summary Create a new tenant
+// @Description Creates a new tenant and stores it in the database
+// @Tags Tenants
+// @Accept json
+// @Param Authorization header string true "Bearer Token"
+// @Param tenant body models.Tenant true "Tenant Data"
+// @Produce json
+// @Success 201 {object} object
+// @Router /tenants [post]
 func CreateTenant(c *fiber.Ctx) error {
 	tenant := new(models.Tenant)
 	if err := c.BodyParser(tenant); err != nil {
@@ -16,7 +24,15 @@ func CreateTenant(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(tenant)
 }
 
-// GetTenant - Retrieve a tenant by ID
+// @Summary Get a tenant by ID
+// @Description Retrieves a single tenant using its ID
+// @Tags Tenants
+// @Accept json
+// @Param Authorization header string true "Bearer Token"
+// @Produce json
+// @Param id path string true "Tenant ID"
+// @Success 200 {object} object
+// @Router /tenants/{id} [get]
 func GetTenant(c *fiber.Ctx) error {
 	id := c.Params("id")
 	var tenant models.Tenant
@@ -26,14 +42,30 @@ func GetTenant(c *fiber.Ctx) error {
 	return c.JSON(tenant)
 }
 
-// GetAllTenants - Retrieve all tenants
+// @Summary Get all tenants
+// @Description Fetches all tenants from the database
+// @Tags Tenants
+// @Accept json
+// @Param Authorization header string true "Bearer Token"
+// @Produce json
+// @Success 200 {array} object
+// @Router /tenants [get]
 func GetAllTenants(c *fiber.Ctx) error {
 	var tenants []models.Tenant
 	database.DB.Find(&tenants)
 	return c.JSON(tenants)
 }
 
-// UpdateTenant - Update a tenant
+// @Summary Update a tenant
+// @Description Updates a tenant’s details using its ID
+// @Tags Tenants
+// @Accept json
+// @Param Authorization header string true "Bearer Token"
+// @Param tenant body models.Tenant true "Tenant Data"
+// @Produce json
+// @Param id path string true "Tenant ID"
+// @Success 200 {object} object
+// @Router /tenants/{id} [put]
 func UpdateTenant(c *fiber.Ctx) error {
 	id := c.Params("id")
 	//Check if ID is a number
@@ -50,7 +82,15 @@ func UpdateTenant(c *fiber.Ctx) error {
 	return c.JSON(tenant)
 }
 
-// DeleteTenant - Delete a tenant
+// @Summary Delete a tenant
+// @Description Deletes a tenant using its ID
+// @Tags Tenants
+// @Accept json
+// @Param Authorization header string true "Bearer Token"
+// @Produce json
+// @Param id path string true "Tenant ID"
+// @Success 204
+// @Router /tenants/{id} [delete]
 func DeleteTenant(c *fiber.Ctx) error {
 	id := c.Params("id")
 	//Check if id is a number
