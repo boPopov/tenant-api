@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -72,7 +73,7 @@ func GithubCallbackHandler(c *fiber.Ctx) error {
 
 	// Return JWT Token
 	return c.JSON(fiber.Map{
-		"access_token": jwtToken,
+		"access_token": fmt.Sprintf("Bearer %s", jwtToken),
 		"user": fiber.Map{
 			"username": user["login"],
 			"email":    user["email"],
