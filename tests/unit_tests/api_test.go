@@ -14,6 +14,7 @@ import (
 
 var bearer_token string
 var baseUrl string
+var newTenantId int
 
 func init() {
 	bearer_token = mocks.MockGenerateJWT("test")
