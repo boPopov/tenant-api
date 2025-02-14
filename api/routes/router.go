@@ -9,10 +9,14 @@ import (
 )
 
 func SetRouths(app *fiber.App) {
+	// Swagger Endpoints
 	app.Static("/swagger", "./swaggerdocs")
+
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
-	api := app.Group("/api")
+	api := app.Group("/api") //Creating an API Group
+
+	// Tenant APIs, all start with /api/tenants*
 
 	api.Post("/tenants", middleware.JWTProtected(), handler.CreateTenant)
 

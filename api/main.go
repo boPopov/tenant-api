@@ -16,23 +16,23 @@ import (
 // @termsOfService http://swagger.io/terms/
 // @contact.name API Support
 // @contact.url http://www.example.com/support
-// @contact.email support@example.com
+// @contact.email bojpopov@gmail.com
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 // @host localhost:3000
 // @BasePath /api
 func main() {
 
-	database.ConnectDB()
+	database.ConnectDB() //Establishing Database connection
 
 	app := fiber.New() //Setting Fiber instance
 
 	routes.SetRouths(app) //Setting rouths
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8083"
+	port := os.Getenv("PORT") //Getting Environment variable for PORT
+	if port == "" {           //Checking if Port Environment variable is set
+		port = "3000" //Default value set
 	}
 
-	log.Fatal(app.Listen(":" + port))
+	log.Fatal(app.Listen(":" + port)) //Starting Fiber.
 }
