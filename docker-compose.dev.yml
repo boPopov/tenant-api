@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: api-tenant
+    environment:
+      - PORT=3000
+      - DB_HOST=database
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=tenants
+      - DB_PORT=5432
+      - GITHUB_CLIENT_ID=Ov23lisSIcHJt3PmOIpb
+      - GITHUB_CLIENT_SECRET=dd4583142eca2c0b26922b66ec2e12cd7afb3a2a
+    ports:
+      - 3000:3000
+    depends_on:
+      - database
+    networks:
+      - tenant
+  
+  database:
+    image: postgres
+    container_name: database
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=tenants
+    volumes:
+      - ./database-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - tenant
+
+networks:
+  tenant:
+    driver: bridge

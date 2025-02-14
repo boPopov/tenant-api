@@ -1,0 +1,174 @@
+basePath: /api
+definitions:
+  models.Tenant:
+    type: object
+host: localhost:3000
+info:
+  contact:
+    email: support@example.com
+    name: API Support
+    url: http://www.example.com/support
+  description: This is a sample API for managing tenants.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Tenant API
+  version: "1.0"
+paths:
+  /auth/github/callback:
+    get:
+      description: Handles the OAuth callback from GitHub
+      parameters:
+      - description: Authorization Code
+        in: query
+        name: code
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      summary: GitHub OAuth Callback
+      tags:
+      - Authentication
+  /auth/github/login:
+    get:
+      description: Redirects user to GitHub for OAuth authentication
+      responses:
+        "302":
+          description: Found
+      summary: GitHub Login
+      tags:
+      - Authentication
+  /tenants:
+    get:
+      consumes:
+      - application/json
+      description: Fetches all tenants from the database
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: object
+            type: array
+      summary: Get all tenants
+      tags:
+      - Tenants
+    post:
+      consumes:
+      - application/json
+      description: Creates a new tenant and stores it in the database
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Tenant Data
+        in: body
+        name: tenant
+        required: true
+        schema:
+          $ref: '#/definitions/models.Tenant'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: object
+      summary: Create a new tenant
+      tags:
+      - Tenants
+  /tenants/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a tenant using its ID
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Tenant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Delete a tenant
+      tags:
+      - Tenants
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a single tenant using its ID
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Tenant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      summary: Get a tenant by ID
+      tags:
+      - Tenants
+    put:
+      consumes:
+      - application/json
+      description: Updates a tenant’s details using its ID
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Tenant Data
+        in: body
+        name: tenant
+        required: true
+        schema:
+          $ref: '#/definitions/models.Tenant'
+      - description: Tenant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      summary: Update a tenant
+      tags:
+      - Tenants
+swagger: "2.0"
