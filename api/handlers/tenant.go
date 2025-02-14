@@ -105,7 +105,7 @@ func DeleteTenant(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Tenant not found"})
 	}
 
-	if err := database.DB.Delete(&tenant, id).Error; err != nil {
+	if err := database.DB.Delete(&tenant, id).Error; err != nil { //Deleting tenant.
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Tenant not found"})
 	}
 	return c.SendStatus(fiber.StatusNoContent)
