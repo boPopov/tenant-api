@@ -4,8 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 	"time"
 
+	"github.com/boPopov/tenant-api/api/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/oauth2"
@@ -14,14 +16,14 @@ import (
 
 // OAuth Config
 var oauthConfig = &oauth2.Config{
-	ClientID:     "Ov23liqCWXLsBMtqEUaM",                     // Read from env
-	ClientSecret: "a14ea7a80a8720de2683e1f1e2eedc3f8459a40a", // Read from env
+	ClientID:     os.Getenv("GITHUB_CLIENT_ID"),
+	ClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
 	RedirectURL:  "http://localhost:3000/api/auth/github/callback",
 	Scopes:       []string{"user"},
 	Endpoint:     github.Endpoint,
 }
 
-var jwtSecret = []byte("supersecretkey") // Change this in production!
+var jwtSecret = []byte(utils.JwtSecret) // Change this in production!
 
 // GitHub Login Handler - Redirects to GitHub OAuth
 // @Summary GitHub Login
