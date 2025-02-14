@@ -16,12 +16,18 @@ import (
 // @Success 201 {object} object
 // @Router /tenants [post]
 func CreateTenant(c *fiber.Ctx) error {
-	tenant := new(models.Tenant)
-	if err := c.BodyParser(tenant); err != nil {
+	tenant := new(models.Tenant)                 //Creating a new tenant instance from the tenant model
+	if err := c.BodyParser(tenant); err != nil { //Parsing data and checking JSON structure.
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
 	}
-	database.DB.Create(&tenant)
-	return c.Status(fiber.StatusCreated).JSON(tenant)
+
+	if tenant.Name == "" && tenant.Email == "" { //Checking if email and/or name are not set.
+		return c.Status(fiber.StatusBadRequest).JSON("You must provide a value for Name and/or Email!")
+	}
+
+	database.DB.Create(&tenant) //Creating a new record in database for the new entered tenant
+
+	return c.Status(fiber.StatusCreated).JSON(tenant) //Returning status created.
 }
 
 // @Summary Get a tenant by ID
@@ -36,7 +42,7 @@ func CreateTenant(c *fiber.Ctx) error {
 func GetTenant(c *fiber.Ctx) error {
 	id := c.Params("id")
 	var tenant models.Tenant
-	if err := database.DB.First(&tenant, id).Error; err != nil {
+	if err := database.DB.First(&tenant, id).Error; err != nil { //If tenant is not found in Database, we return  404.
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Tenant not found"})
 	}
 	return c.JSON(tenant)
@@ -70,15 +76,15 @@ func UpdateTenant(c *fiber.Ctx) error {
 	id := c.Params("id")
 	//Check if ID is a number
 	var tenant models.Tenant
-	if err := database.DB.First(&tenant, id).Error; err != nil {
+	if err := database.DB.First(&tenant, id).Error; err != nil { //Finding tenant.
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Tenant not found"})
 	}
 
-	if err := c.BodyParser(&tenant); err != nil {
+	if err := c.BodyParser(&tenant); err != nil { //Checking the parsing
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
 	}
 
-	database.DB.Save(&tenant)
+	database.DB.Save(&tenant) //Saving in DB
 	return c.JSON(tenant)
 }
 
@@ -93,8 +99,13 @@ func UpdateTenant(c *fiber.Ctx) error {
 // @Router /tenants/{id} [delete]
 func DeleteTenant(c *fiber.Ctx) error {
 	id := c.Params("id")
-	//Check if id is a number
-	if err := database.DB.Delete(&models.Tenant{}, id).Error; err != nil {
+
+	var tenant models.Tenant
+	if err := database.DB.First(&tenant, id).Error; err != nil { //Finding tenant.
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Tenant not found"})
+	}
+
+	if err := database.DB.Delete(&tenant, id).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Tenant not found"})
 	}
 	return c.SendStatus(fiber.StatusNoContent)

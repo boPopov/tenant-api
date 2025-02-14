@@ -83,12 +83,13 @@ func GithubCallbackHandler(c *fiber.Ctx) error {
 }
 
 // Generate JWT Token
-func generateJWT(username string) (string, error) {
+func generateJWT(username string) (jwtToken string, err error) {
 	claims := jwt.MapClaims{
 		"username": username,
 		"exp":      time.Now().Add(time.Hour * 1).Unix(), // Token expires in 1 hour
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(jwtSecret)
+	jwtToken, err = token.SignedString(jwtSecret)
+	return
 }
