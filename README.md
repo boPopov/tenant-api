@@ -76,8 +76,14 @@ cd tests/unit_tests
 # Simple run of the tests
 go test . 
 
+# Simple run of the tests without cache
+go test --count=1 .
+
 # Verbose execution of the tests
 go test -v .
+
+# Verbose execution of the tests without cache
+go test --count=1 -v .
 ```
 
 ### Integration Tests:
