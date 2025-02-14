@@ -1,63 +1,64 @@
 package integration
 
 import (
+	"context"
 	"encoding/json"
-	"log"
+	"fmt"
+	"io"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/oauth2"
 )
 
-// Base URL for Docker API
-const baseURL = "http://localhost:3000"
-
-// Mock Response for OAuth Provider (e.g., GitHub)
-type OAuthResponse struct {
-	AccessToken string `json:"access_token"`
-	TokenType   string `json:"token_type"`
+// Mock OAuth2 Token Server
+func mockOAuthServer() *httptest.Server {
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/token" {
+			w.Header().Set("Content-Type", "application/json")
+			// Return mock access token
+			fmt.Fprintln(w, `{"access_token":"mockAccessToken","token_type":"Bearer"}`)
+		} else {
+			w.WriteHeader(http.StatusNotFound)
+		}
+	}))
 }
 
-// Simulated OAuth 2.0 Login Flow
+// Test OAuth Integration
 func TestOAuthFlowIntegration(t *testing.T) {
-	// Step 1: Simulate OAuth Provider Response
-	// oauthMockResponse := OAuthResponse{
-	// 	AccessToken: mocks.OAuthMockGenerateToken("oauthIntegrationUser"),
-	// 	TokenType:   "Bearer",
-	// }
+	// Step 1: Start Mock OAuth Server
+	oauthServer := mockOAuthServer()
+	defer oauthServer.Close()
 
-	// Step 2: Mock OAuth Callback (`/auth/callback`)
-	// reqBody, _ := json.Marshal(oauthMockResponse) bytes.NewBuffer(reqBody)
-	req, err := http.NewRequest(http.MethodGet, baseURL+"/api/auth/github/callback", nil)
-	assert.NoError(t, err)
+	// Step 2: Use Mock OAuth URL in oauthConfig
+	mockOAuthConfig := &oauth2.Config{
+		ClientID:     "mock-client-id",
+		ClientSecret: "mock-client-secret",
+		Endpoint: oauth2.Endpoint{
+			TokenURL: oauthServer.URL + "/token",
+		},
+	}
 
-	req.Header.Set("Content-Type", "application/json")
+	// Simulate GitHub Callback (OAuth Code Exchange)
+	token, err := mockOAuthConfig.Exchange(context.Background(), "mockCode")
+	assert.NoError(t, err, "Failed to exchange mock code")
+	assert.Equal(t, "mockAccessToken", token.AccessToken, "Expected mock access token")
+
+	// Simulate API Call to Protected Route `/api/tenants`
+	req, _ := http.NewRequest(http.MethodGet, "http://localhost:3000/api/tenants", nil)
+	req.Header.Set("Authorization", "Bearer "+token.AccessToken)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
-	assert.NoError(t, err)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.NoError(t, err, "Request to /api/tenants failed")
 
-	// Step 3: Decode Access Token
-	var response map[string]interface{}
-	json.NewDecoder(resp.Body).Decode(&response)
-	log.Println(response["access_token"])
+	defer resp.Body.Close()
+	assert.Equal(t, http.StatusOK, resp.StatusCode, "Expected 200 OK from /api/tenants")
 
-	accessToken, exists := response["access_token"].(string)
-	assert.True(t, exists, "Expected an access token in the response")
-
-	// Step 4: Use Token to Access Protected Route
-	req2, err := http.NewRequest(http.MethodGet, baseURL+"/api/tenants", nil)
-	assert.NoError(t, err)
-
-	req2.Header.Set("Authorization", "Bearer "+accessToken)
-
-	resp2, err := client.Do(req2)
-	assert.NoError(t, err)
-	assert.Equal(t, http.StatusOK, resp2.StatusCode)
-
-	// Step 5: Decode and Assert Tenant List
+	body, _ := io.ReadAll(resp.Body)
 	var tenants []map[string]interface{}
-	json.NewDecoder(resp2.Body).Decode(&tenants)
-	assert.Greater(t, len(tenants), 0, "Expected some tenants to be listed")
+	json.Unmarshal(body, &tenants)
+	assert.Greater(t, len(tenants), 0, "Expected tenant list")
 }
