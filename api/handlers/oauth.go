@@ -7,7 +7,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/boPopov/tenant-api/api/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/oauth2"
@@ -23,7 +22,7 @@ var oauthConfig = &oauth2.Config{
 	Endpoint:     github.Endpoint,
 }
 
-var jwtSecret = []byte(utils.JwtSecret) // Change this in production!
+var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
 
 // GitHub Login Handler - Redirects to GitHub OAuth
 // @Summary GitHub Login

@@ -3,11 +3,10 @@ package mocks
 import (
 	"time"
 
-	"github.com/boPopov/tenant-api/api/utils"
 	"github.com/golang-jwt/jwt/v4"
 )
 
-var jwtSecret = []byte(utils.JwtSecret)
+var jwtSecret = []byte("544c142b11d962494bc6d7ecffcd53c94862bb849f0c245ae8bb9715b10a03c6")
 
 // MockGenerateJWT creates a simple mock JWT token for testing
 func MockGenerateJWT(username string) string {
@@ -30,6 +29,6 @@ func OAuthMockGenerateToken(username string) string {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	jwtToken, _ := token.SignedString([]byte(utils.JwtSecret)) // Same secret as the API
+	jwtToken, _ := token.SignedString([]byte("544c142b11d962494bc6d7ecffcd53c94862bb849f0c245ae8bb9715b10a03c6")) // Same secret as the API
 	return jwtToken
 }
