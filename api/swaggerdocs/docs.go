@@ -13,7 +13,7 @@ const docTemplate = `{
         "contact": {
             "name": "API Support",
             "url": "http://www.example.com/support",
-            "email": "support@example.com"
+            "email": "bojpopov@gmail.com"
         },
         "license": {
             "name": "Apache 2.0",
@@ -119,12 +119,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Tenant Data",
+                        "description": "Tenant Request",
                         "name": "tenant",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Tenant"
+                            "$ref": "#/definitions/models.TenantRequest"
                         }
                     }
                 ],
@@ -197,12 +197,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Tenant Data",
+                        "description": "Tenant Request",
                         "name": "tenant",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Tenant"
+                            "$ref": "#/definitions/models.TenantRequest"
                         }
                     },
                     {
@@ -259,8 +259,22 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.Tenant": {
-            "type": "object"
+        "models.TenantRequest": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "email": {
+                    "type": "string",
+                    "example": "johndoe@example.com"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                }
+            }
         }
     }
 }`

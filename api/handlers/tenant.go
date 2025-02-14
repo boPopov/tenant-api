@@ -11,14 +11,25 @@ import (
 // @Tags Tenants
 // @Accept json
 // @Param Authorization header string true "Bearer Token"
-// @Param tenant body models.Tenant true "Tenant Data"
+// @Param tenant body models.TenantRequest true "Tenant Request"
 // @Produce json
 // @Success 201 {object} object
 // @Router /tenants [post]
 func CreateTenant(c *fiber.Ctx) error {
-	tenant := new(models.Tenant)                 //Creating a new tenant instance from the tenant model
-	if err := c.BodyParser(tenant); err != nil { //Parsing data and checking JSON structure.
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
+	var request models.TenantRequest
+
+	// Parse and validate request body
+	if err := c.BodyParser(&request); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request body",
+		})
+	}
+
+	// Create a Tenant record from the request
+	tenant := models.Tenant{
+		Name:   request.Name,
+		Email:  request.Email,
+		Active: request.Active,
 	}
 
 	if tenant.Name == "" && tenant.Email == "" { //Checking if email and/or name are not set.
@@ -67,7 +78,7 @@ func GetAllTenants(c *fiber.Ctx) error {
 // @Tags Tenants
 // @Accept json
 // @Param Authorization header string true "Bearer Token"
-// @Param tenant body models.Tenant true "Tenant Data"
+// @Param tenant body models.TenantRequest true "Tenant Request"
 // @Produce json
 // @Param id path string true "Tenant ID"
 // @Success 200 {object} object
@@ -105,7 +116,7 @@ func DeleteTenant(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Tenant not found"})
 	}
 
-	if err := database.DB.Delete(&tenant, id).Error; err != nil { //Deleting tenant.
+	if err := database.DB.Delete(&tenant, id).Error; err != nil { //Deleting tenant
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Tenant not found"})
 	}
 	return c.SendStatus(fiber.StatusNoContent)
