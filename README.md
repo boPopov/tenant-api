@@ -67,10 +67,17 @@ swag init --dir . --output ./swaggerdocs
 
 ---
 
-## 🧪 Testing
-### 🧪 Unit Tests:
+## Testing
+### Unit Tests:
 ```bash
-go test ./... -v
+# Navigate to the unit test folder
+cd tests/unit_tests
+
+# Simple run of the tests
+go test . 
+
+# Verbose execution of the tests
+go test -v .
 ```
 
 ### Integration Tests:
