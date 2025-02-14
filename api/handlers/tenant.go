@@ -99,8 +99,13 @@ func UpdateTenant(c *fiber.Ctx) error {
 // @Router /tenants/{id} [delete]
 func DeleteTenant(c *fiber.Ctx) error {
 	id := c.Params("id")
-	//Check if id is a number
-	if err := database.DB.Delete(&models.Tenant{}, id).Error; err != nil {
+
+	var tenant models.Tenant
+	if err := database.DB.First(&tenant, id).Error; err != nil { //Finding tenant.
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Tenant not found"})
+	}
+
+	if err := database.DB.Delete(&tenant, id).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Tenant not found"})
 	}
 	return c.SendStatus(fiber.StatusNoContent)
