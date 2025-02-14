@@ -1,11 +1,21 @@
 basePath: /api
 definitions:
-  models.Tenant:
+  models.TenantRequest:
+    properties:
+      active:
+        example: true
+        type: boolean
+      email:
+        example: johndoe@example.com
+        type: string
+      name:
+        example: John Doe
+        type: string
     type: object
 host: localhost:3000
 info:
   contact:
-    email: support@example.com
+    email: bojpopov@gmail.com
     name: API Support
     url: http://www.example.com/support
   description: This is a sample API for managing tenants.
@@ -75,12 +85,12 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: Tenant Data
+      - description: Tenant Request
         in: body
         name: tenant
         required: true
         schema:
-          $ref: '#/definitions/models.Tenant'
+          $ref: '#/definitions/models.TenantRequest'
       produces:
       - application/json
       responses:
@@ -150,12 +160,12 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: Tenant Data
+      - description: Tenant Request
         in: body
         name: tenant
         required: true
         schema:
-          $ref: '#/definitions/models.Tenant'
+          $ref: '#/definitions/models.TenantRequest'
       - description: Tenant ID
         in: path
         name: id
