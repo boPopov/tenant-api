@@ -118,6 +118,32 @@ tenant-api/
 
 ---
 
+## Environment Variables
+### API Environment Variables
+| Variable | Description |
+|----------|------------|
+| `PORT` | Port where the API runs (Default: `3000`) |
+| `DB_HOST` | Database Host for Accessing the database |
+| `DB_USER` | Database User for Accessing the database |
+| `DB_PASSWORD` | Database Password for Accessing the database |
+| `DB_NAME` | Database Name for Accessing the database |
+| `DB_PORT` | Port where the Database can be accessed (Default: `5432`) |
+| `JWT_SECRET` | Secret key for signing JWT tokens |
+| `JWT_EXPIRE_INTERVAL` | Interval until the JWT token expires (Example: 55s, 15m, 2h, 1d) |
+| `DATABASE_URL` | Connection string for PostgreSQL |
+| `GITHUB_CLIENT_ID` | GitHub OAuth Client ID |
+| `GITHUB_CLIENT_SECRET` | GitHub OAuth Client Secret |
+
+### Database Environment Variables
+| Variable | Description |
+|----------|------------|
+| `POSTGRES_USER` | PostgreSQL username (Default: `postgres`) |
+| `POSTGRES_PASSWORD` | PostgreSQL password |
+| `POSTGRES_DB` | Database name (Default: `tenants`) |
+
+---
+
+
 ## Author
 - Created by **Bojan Popov**
 
