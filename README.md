@@ -113,6 +113,29 @@ tenant-api/
 
 ---
 
+## Running the API Locally
+For development, you can run the API directly on your local machine without using Docker:
+
+### **Linux/macOS**:
+```bash
+chmod +x local_run_linux.sh
+./local_run_linux.sh
+```
+
+### **Windows (PowerShell)**:
+```cmd
+.\local_run_windows.bat
+```
+
+These scripts:
+- Load environment variables from `env/api/.env`
+- Start the Go application manually
+
+Ensure that **PostgreSQL** is running before starting the API locally.
+
+**Note:** Additionally, change the environment variables based on your environment.
+---
+
 ## Security
 - OAuth 2.0 authentication is integrated with GitHub.
 
