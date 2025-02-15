@@ -16,6 +16,7 @@ services:
       - GITHUB_CLIENT_ID=Ov23liqCWXLsBMtqEUaM
       - GITHUB_CLIENT_SECRET=a14ea7a80a8720de2683e1f1e2eedc3f8459a40a
       - JWT_SECRET=544c142b11d962494bc6d7ecffcd53c94862bb849f0c245ae8bb9715b10a03c6
+      - JWT_EXPIRE_INTERVAL=1h
     ports:
       - 3000:3000
     depends_on:
