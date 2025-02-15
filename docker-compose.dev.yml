@@ -50,7 +50,7 @@ services:
       - "5432"
     volumes:
       - ./pgadmin-data:/var/lib/pgadmin
-    user: "5050:5050"  # Ensure pgAdmin runs with the correct user
+    user: "5050:5050"
     networks:
       - tenant
 

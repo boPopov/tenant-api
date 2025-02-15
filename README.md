@@ -69,6 +69,10 @@ sudo rm -rf pgadmin-data
 
 ---
 
+## Access PGAdmin
+Once the all of the docker containers are running, you can access the pgAdmin by opening `http://localhost:5050/`. <br/>
+This will open a Login page, enter the `PGADMIN_DEFAULT_EMAIL` and `PGADMIN_DEFAULT_PASSWORD`. 
+
 ## API Documentation (Swagger)
 #### View Swagger Docs:
 - Once the API is running, access Swagger UI at:

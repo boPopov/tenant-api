@@ -23,6 +23,21 @@ services:
       - ./db-data:/var/lib/postgresql/data
     networks:
       - tenant
+  
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    restart: always
+    env_file:
+      - ./env/pgAdmin/.env
+    ports:
+      - "5050:80"
+      - "5432"
+    volumes:
+      - ./pgadmin-data:/var/lib/pgadmin
+    user: "5050:5050"
+    networks:
+      - tenant
 
 networks:
   tenant:
