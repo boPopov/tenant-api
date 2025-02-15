@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"time"
 
+	"github.com/boPopov/tenant-api/api/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/oauth2"
@@ -42,37 +42,19 @@ func GithubLoginHandler(c *fiber.Ctx) error {
 // @Param code query string true "Authorization Code"
 // @Success 200 {object} object
 // @Router /auth/github/callback [get]
-func GithubCallbackHandler(c *fiber.Ctx) error {
-	// Get code from GitHub callback
-	code := c.Query("code")
-	if code == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Missing code parameter"})
-	}
-
-	// Exchange the authorization code for an access token
-	token, err := oauthConfig.Exchange(context.Background(), code)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to exchange token"})
-	}
-
-	// Fetch user details from GitHub
-	client := oauthConfig.Client(context.Background(), token)
-	resp, err := client.Get("https://api.github.com/user")
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to get user info"})
-	}
-	defer resp.Body.Close()
+func GithubCallbackHandler(c *fiber.Ctx) error { //Check section
 
 	var user map[string]interface{}
-	json.NewDecoder(resp.Body).Decode(&user)
+	user, err := getUser(c)
+	if err != nil {
+		return err
+	}
 
-	// Generate JWT Token
 	jwtToken, err := generateJWT(user["login"].(string))
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate token"})
 	}
 
-	// Return JWT Token
 	return c.JSON(fiber.Map{
 		"access_token": fmt.Sprintf("Bearer %s", jwtToken),
 		"user": fiber.Map{
@@ -83,11 +65,44 @@ func GithubCallbackHandler(c *fiber.Ctx) error {
 	})
 }
 
-// Generate JWT Token
+func getUser(c *fiber.Ctx) (user map[string]interface{}, errorGetUser error) {
+	token, err := getToken(c)
+	if err != nil {
+		errorGetUser = err
+		return
+	}
+
+	client := oauthConfig.Client(context.Background(), token)
+	resp, err := client.Get("https://api.github.com/user")
+	if err != nil {
+		errorGetUser = c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to get user info"})
+		return
+	}
+	defer resp.Body.Close()
+
+	json.NewDecoder(resp.Body).Decode(&user)
+	return user, errorGetUser
+
+}
+
+func getToken(c *fiber.Ctx) (token *oauth2.Token, errorGetToken error) {
+	code := c.Query("code")
+	if code == "" {
+		errorGetToken = c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Missing code parameter"})
+		return
+	}
+	token, err := oauthConfig.Exchange(context.Background(), code)
+	if err != nil {
+		errorGetToken = c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to exchange token"})
+		return
+	}
+	return
+}
+
 func generateJWT(username string) (jwtToken string, err error) {
 	claims := jwt.MapClaims{
 		"username": username,
-		"exp":      time.Now().Add(time.Hour * 1).Unix(), // Token expires in 1 hour
+		"exp":      utils.IntervalGenerator(""),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
