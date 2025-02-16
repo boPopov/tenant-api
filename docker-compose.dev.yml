@@ -16,6 +16,7 @@ services:
       - GITHUB_CLIENT_ID=Ov23liqCWXLsBMtqEUaM
       - GITHUB_CLIENT_SECRET=a14ea7a80a8720de2683e1f1e2eedc3f8459a40a
       - JWT_SECRET=544c142b11d962494bc6d7ecffcd53c94862bb849f0c245ae8bb9715b10a03c6
+      - JWT_EXPIRE_INTERVAL=1h
     ports:
       - 3000:3000
     depends_on:
@@ -34,6 +35,22 @@ services:
       - ./database-data:/var/lib/postgresql/data
     ports:
       - 5432:5432
+    networks:
+      - tenant
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@example.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+      - "5050:80"
+      - "5432"
+    volumes:
+      - ./pgadmin-data:/var/lib/pgadmin
+    user: "5050:5050"
     networks:
       - tenant
 

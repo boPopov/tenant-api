@@ -1,8 +1,7 @@
 package mocks
 
 import (
-	"time"
-
+	"github.com/boPopov/tenant-api/api/utils"
 	"github.com/golang-jwt/jwt/v4"
 )
 
@@ -12,7 +11,7 @@ var jwtSecret = []byte("544c142b11d962494bc6d7ecffcd53c94862bb849f0c245ae8bb9715
 func MockGenerateJWT(username string) string {
 	claims := jwt.MapClaims{
 		"username": username,
-		"exp":      time.Now().Add(time.Hour * 1).Unix(), // 1-hour expiration
+		"exp":      utils.IntervalGenerator("1h"),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -25,7 +24,7 @@ func OAuthMockGenerateToken(username string) string {
 	claims := jwt.MapClaims{
 		"username": username,
 		"iss":      "mock-oauth-provider",
-		"exp":      time.Now().Add(time.Hour * 1).Unix(),
+		"exp":      utils.IntervalGenerator("1h"),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

@@ -46,13 +46,32 @@ docker-compose up -d
 docker-compose down
 ```
 
+#### Linux Pre-Setup Commands
+If running on **Linux**, ensure the following pre-setup steps are done:
+```bash
+# Create directory for pgAdmin persistent storage
+mkdir -p ./pgadmin-data
+
+# Set correct ownership for pgAdmin
+sudo chown -R 5050:5050 ./pgadmin-data
+sudo chmod -R 770 ./pgadmin-data
+```
+These steps ensure **pgAdmin** has the required permissions when running inside Docker.
+
+Use the Environment variables inside the `./env/api/.env` file or inside the `docker-compose.dev.yml` file to create the server.
+
 #### Linux-Specific Commands:
 ```bash
 # Remove all database data (use with caution!)
-rm -rf db-data
+sudo rm -rf db-data
+sudo rm -rf pgadmin-data
 ```
 
 ---
+
+## Access PGAdmin
+Once the all of the docker containers are running, you can access the pgAdmin by opening `http://localhost:5050/`. <br/>
+This will open a Login page, enter the `PGADMIN_DEFAULT_EMAIL` and `PGADMIN_DEFAULT_PASSWORD`. 
 
 ## API Documentation (Swagger)
 #### View Swagger Docs:
@@ -113,10 +132,59 @@ tenant-api/
 
 ---
 
+## Running the API Locally
+For development, you can run the API directly on your local machine without using Docker:
+
+### **Linux/macOS**:
+```bash
+chmod +x local_run_linux.sh
+./local_run_linux.sh
+```
+
+### **Windows (PowerShell)**:
+```cmd
+.\local_run_windows.bat
+```
+
+These scripts:
+- Load environment variables from `env/api/.env`
+- Start the Go application manually
+
+Ensure that **PostgreSQL** is running before starting the API locally.
+
+**Note:** Additionally, change the environment variables based on your environment.
+---
+
 ## Security
 - OAuth 2.0 authentication is integrated with GitHub.
 
 ---
+
+## Environment Variables
+### API Environment Variables
+| Variable | Description |
+|----------|------------|
+| `PORT` | Port where the API runs (Default: `3000`) |
+| `DB_HOST` | Database Host for Accessing the database |
+| `DB_USER` | Database User for Accessing the database |
+| `DB_PASSWORD` | Database Password for Accessing the database |
+| `DB_NAME` | Database Name for Accessing the database |
+| `DB_PORT` | Port where the Database can be accessed (Default: `5432`) |
+| `JWT_SECRET` | Secret key for signing JWT tokens |
+| `JWT_EXPIRE_INTERVAL` | Interval until the JWT token expires (Example: 55s, 15m, 2h, 1d) |
+| `DATABASE_URL` | Connection string for PostgreSQL |
+| `GITHUB_CLIENT_ID` | GitHub OAuth Client ID |
+| `GITHUB_CLIENT_SECRET` | GitHub OAuth Client Secret |
+
+### Database Environment Variables
+| Variable | Description |
+|----------|------------|
+| `POSTGRES_USER` | PostgreSQL username (Default: `postgres`) |
+| `POSTGRES_PASSWORD` | PostgreSQL password |
+| `POSTGRES_DB` | Database name (Default: `tenants`) |
+
+---
+
 
 ## Author
 - Created by **Bojan Popov**
