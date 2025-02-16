@@ -69,6 +69,9 @@ sudo rm -rf pgadmin-data
 
 ---
 
+#### Note
+When running the services with the `docker-compose.yml` file, the api services start with a delay of 30+ seconds. Because it waits for the database to start up. 
+
 ## Access PGAdmin
 Once the all of the docker containers are running, you can access the pgAdmin by opening `http://localhost:5050/`. <br/>
 This will open a Login page, enter the `PGADMIN_DEFAULT_EMAIL` and `PGADMIN_DEFAULT_PASSWORD`. 
