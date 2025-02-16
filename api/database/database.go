@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/boPopov/tenant-api/api/models"
 	"gorm.io/driver/postgres"
@@ -26,13 +27,19 @@ func ConnectDB() {
 		os.Getenv("DB_PORT"),
 	) //Setting up the connection string to the database.
 
-	/**
-	 * Section for opening database Connection
-	 */
-	var err error
-	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Failed to connect to database:", err)
+	for {
+		var err error
+		DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		if err == nil {
+			sqlDB, _ := DB.DB()
+			err = sqlDB.Ping() // Ensure database is actually reachable
+			if err == nil {
+				break
+			}
+		}
+
+		log.Println("Database not ready. Retrying in 5 seconds...")
+		time.Sleep(5 * time.Second)
 	}
 
 	log.Println("Database connection established")

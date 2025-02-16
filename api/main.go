@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"time"
 
 	"github.com/boPopov/tenant-api/api/database"
 	"github.com/boPopov/tenant-api/api/routes"
@@ -22,6 +23,8 @@ import (
 // @host localhost:3000
 // @BasePath /api
 func main() {
+
+	time.Sleep(30 * time.Second)
 
 	database.ConnectDB() //Establishing Database connection
 
