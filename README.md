@@ -46,13 +46,32 @@ docker-compose up -d
 docker-compose down
 ```
 
+#### Linux Pre-Setup Commands
+If running on **Linux**, ensure the following pre-setup steps are done:
+```bash
+# Create directory for pgAdmin persistent storage
+mkdir -p ./pgadmin-data
+
+# Set correct ownership for pgAdmin
+sudo chown -R 5050:5050 ./pgadmin-data
+sudo chmod -R 770 ./pgadmin-data
+```
+These steps ensure **pgAdmin** has the required permissions when running inside Docker.
+
+Use the Environment variables inside the `./env/api/.env` file or inside the `docker-compose.dev.yml` file to create the server.
+
 #### Linux-Specific Commands:
 ```bash
 # Remove all database data (use with caution!)
-rm -rf db-data
+sudo rm -rf db-data
+sudo rm -rf pgadmin-data
 ```
 
 ---
+
+## Access PGAdmin
+Once the all of the docker containers are running, you can access the pgAdmin by opening `http://localhost:5050/`. <br/>
+This will open a Login page, enter the `PGADMIN_DEFAULT_EMAIL` and `PGADMIN_DEFAULT_PASSWORD`. 
 
 ## API Documentation (Swagger)
 #### View Swagger Docs:
