@@ -122,7 +122,8 @@ tenant-api/
 │   └── unit                # Unit tests
 ├── env/                    # Environment variable files
 │   ├── api/.env            # API environment variables
-│   └── db/.env             # Database environment variables
+│   ├── db/.env             # Database environment variables
+│   └── pgAdmin/.env        # pgAdmin environment variables
 ├── Dockerfile              # Production Dockerfile
 ├── docker-compose.yml      # Docker Compose for Production
 ├── Dockerfile.dev          # Development Dockerfile
@@ -182,6 +183,12 @@ Ensure that **PostgreSQL** is running before starting the API locally.
 | `POSTGRES_USER` | PostgreSQL username (Default: `postgres`) |
 | `POSTGRES_PASSWORD` | PostgreSQL password |
 | `POSTGRES_DB` | Database name (Default: `tenants`) |
+
+### PgAdmin Environment Variables
+| Variable | Description |
+|----------|------------|
+| `PGADMIN_DEFAULT_EMAIL` | Default Admin email |
+| `PGADMIN_DEFAULT_PASSWORD` | Default Admin Password |
 
 ---
 
